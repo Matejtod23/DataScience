@@ -1,0 +1,158 @@
+//////////////////////////////////////////////////////////////////
+
+KNN класификација со k = 3
+
+dadena tabela se bara predviduvanje za id 5
+
+ Id       Distance
+1 No        3.16
+2 No	    4.47
+3 Yes	     2
+4 Yes	    3.16
+
+Distances
+ID 1 -> sqr((4-1)^2 + (2-3)^2) = sqr(10) = 3.16
+ID 2 -> sqr((4-0)^2 + (2-4)^2) = sqr(20) = 4.47
+ID 3 -> sqr((4-2)^2 + (2-2)^2) = sqr(4) = 2
+ID 4 -> sqr((4-3)^2 + (2-5)^2) = sqr(10) = 3.16
+
+knn = 3
+
+najbliski sosedi se do 3 se 2 i dvete 3.16 imame (yes, yes, no)
+pa vrednosta kaj id 5 kje bide YES
+
+/////////////////////////////////////////////////////////////////////
+
+Classification error (drva) po defaulted borrowe kako odluka
+
+Id Marital Status | annual income | defaulted borrower
+1.Single		High		No
+2.Married		Low		No
+3.Divorced		Low		No
+4.Married		Medium		Yes	
+5.Divorced		High		Yes
+6.Single		Low		No	
+7.Divorced		Medium		No
+8.Divorced		High		Yes
+
+Za Marital status
+------------------
+Single -> 2 instanci (No, No)
+Married -> 2 instanci (No, Yes)
+Divorced -> 4 instanci (2xYes, 2xNo)
+--------- 8 instanci -----------
+Error za Single 1-max{1/1} = 0
+Error za Married 1-max{1/2,1/2} = 1 - 0.5 = 0.5
+Error za Divorced 1 - max {2/4, 2/4} = 1 - 0.5 = 0.5
+
+Classification error za Marital status = 0 + 0.5 * 2/8 + 0.5 * 0.5 = 0.375
+
+za Annual income
+--------------------
+Low -> 3 inst (3xNo)
+Medium -> 2 inst (no, yes)
+High -> 3 inst (2xyes, no)
+--------- 8 instanci ----------
+Error za Low 1 - max {3/3} = 0
+Error za Medium 1 - max {1/2, 1/2} = 0.5
+Error za High 1 - max {2/3, 1/3} = 0.33
+
+Classification error za Annual income = 0 + 0.5 * 0.25 + 0.33 * 0.375 = 0.25
+
+se izbira annual income 
+
+//////////////////////////////////////////////////////////////////
+
+Gini index za R1
+     class1	class2
+R1	2	  5
+R2	6	  4
+
+
+1 - ((2/7)^2 + (5/7)^2) = 1 - (0.082 + 0.510) = 1 - 0.592 = 0.408
+	
+R1 -> 0.408 * 7/17 = 0.168  | kade 7 e zbirot na R1  17 zbirto na klasi i r
+
+//////////////////////////////////////////////////////////////////
+KNN klasifikacija so k=3 da se predvidi id 5
+
+Id |  Debt   | annual income | defaulted borrower
+1 	6	   3			No
+2	5	   4			No
+3	4	   2			Yes
+4	3          3			Yes	
+5	2	   2			?
+
+Id    defaulted	  distance
+id -> 1 - No   	   4.12  
+id -> 2 - No   	   3.61
+id -> 3 - Yes      2
+id -> 4 - Yes      1.41
+id -> 5 - Yes	   
+
+id(1) sqrt((2-6)^2 + (2-3)^2) = sqrt(17) = 4.12  
+id(2) sqrt((2-5)^2 + (2-4)^2) = sqrt(13) = 3.61
+id(3) sqrt((2-4)^2 + (2-2)^2) = sqrt(17) = 2
+id(4) sqrt((2-3)^2 + (2-3)^2) = sqrt(2) = 1.41
+
+
+//////////////////////////////////////////////////////////////////
+CLLASSIFICATION ERROR FRUIT_TYPE TARGET KOLONA
+
+Fruit     |   Sweetness  | sournees | fruit_type
+lemon	     Extremly low   High	Sour
+grapefruit   Low	    Medium	Sour	
+orange	     Low	    Medium	Sour	
+rasberry     Medium	    Medium	Sour
+cherry	     Medium	    Medium    	Sweet
+banana	     High	    Low		Sweet
+watermelon   High	    Low		Sweet
+Mandarin     Extermly low   Medium	None
+
+----za sweetnes----
+		Sour    sweet
+Extremly low	1	0	1-max((1/1),(0/1))=>1-1=0
+Low		2	0	1-max((2/2),(0/2))=>1-1=0
+Medium		1	1	1-max((1/2),(1/2))=>1-0.5=0.5
+High		0	2	1-max((0/2),(2/2))=>1-1=0
+
+error za sweetnes = 0 + 0 + 0.5 * 2/7 + 0 = 0.14 se deli so 7 bidejki ne se zema poslednata instanca
+
+----za sourness----
+	Sour	Sweet
+High	1	0	1-1=0
+Medium	3	1	1-max((3/4),(1/4))=1-0.75=0.25
+Low	0	2	1-1=0
+
+error za sweetnes = 0 + 0.25*4/7 + 0 = 0.14
+
+//////////////////////////////////////////////////////////////////
+GINI INDEX TARGET KOLONA VID_OVOSJE
+
+Ovosje     |   Slatkost  | Kiselost | Vid_Ovosje
+limon	     Mnogu niska    Visoka	Kiselo
+citron	     Mnogu niska    visoka	kiselo	
+portokal     niska	    visoka	kiselo	
+malina       niska	    sredna	kiselo
+cresha	     niska	    sredna    	blago
+banana	     visoka	    niska	blago
+lubenica     visoka	    niska	blago
+
+-----Slatkost-----
+		Kiselo	Blago	
+Mnogu niska	2	0	1-((2/2)^2+0)=1-1=0
+Niska		2	1	1-((2/3)^2+(1/3)^2) = 1 - (0.44 + 0.11) = 1-0.55=0.45
+Visoka		0	2	1-((0/2)^2+(2/2)^2) = 1-1 = 0
+
+gini za slatkost = 0 + 0.45*3/7 + 0 = 0.19
+
+------Kiselost-----
+		Kiselo	Blago
+Visoka		3	0	1-((3/3)^2+(0/3)^2) = 1-1 = 0
+sredna		1	1	1-((1/2)^2+(1/2)^2) = 1 - 0.5 = 0.5
+niska		0	2	1-1=0
+
+gini za kiselost = 0 + 0.5*2/7 + 0 = 0.14
+
+se bira pomala vrednost odnosno kiselost
+
